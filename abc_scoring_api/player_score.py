@@ -122,6 +122,7 @@ class PlayerScoreSwedish10(PlayerScore):
         if self.penalty >= 10:
             self.state = PlayerState.LOSE
 
+
 class PlayerScoreFreeze10(PlayerScore):
     """The player score for Freeze 10."""
 
@@ -130,11 +131,8 @@ class PlayerScoreFreeze10(PlayerScore):
         super().answer_right()
         if self.gain >= 10:
             self.state = PlayerState.WIN
-    
+
     def answer_wrong(self) -> None:
         """Define the behavior when the player answers wrong."""
         super().answer_wrong()
         self.breaks = self.loss
-
-
-
