@@ -1,12 +1,12 @@
 import pytest
 
-from abc_scoring_api.player_info import PlayerInfo
-from abc_scoring_api.player_score import (
+from abc_scoring_api.player.player_info import PlayerInfo
+from abc_scoring_api.player.player_score import (
     PlayerScore10by10,
     PlayerScore10UpDown,
+    PlayerScoreFreeze10,
     PlayerScoreSwedish10,
     PlayerState,
-    PlayerScoreFreeze10,
 )
 
 
@@ -220,6 +220,7 @@ class TestPlayerScoreSwedish10:
         assert player_score.penalty == 12
         assert player_score.state == PlayerState.LOSE
 
+
 class TestPlayerScoreFreeze10:
     @staticmethod
     def test_init() -> None:
@@ -241,7 +242,9 @@ class TestPlayerScoreFreeze10:
             (10, 10, PlayerState.WIN),
         ],
     )
-    def test_answer_right(rights: int, expected_point: int, expected_state: PlayerState) -> None:
+    def test_answer_right(
+        rights: int, expected_point: int, expected_state: PlayerState
+    ) -> None:
         player_info = PlayerInfo("山田", "太郎", 1)
         player_score = PlayerScoreFreeze10(player_info)
         for _ in range(rights):
@@ -279,4 +282,3 @@ class TestPlayerScoreFreeze10:
             player_score.answer_wrong()
         player_score.reduce_breaks()
         assert player_score.breaks == 2
-

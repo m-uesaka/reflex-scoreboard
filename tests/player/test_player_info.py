@@ -1,4 +1,4 @@
-from abc_scoring_api.player_info import PlayerInfo
+from abc_scoring_api.player.player_info import PlayerInfo
 
 
 class TestPlayerInfo:

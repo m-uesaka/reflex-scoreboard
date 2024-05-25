@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from abc_scoring_api.player_info import PlayerInfo
+from abc_scoring_api.player.player_info import PlayerInfo
 
 
 class PlayerState(Enum):
