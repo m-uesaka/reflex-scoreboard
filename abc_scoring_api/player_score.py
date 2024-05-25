@@ -49,15 +49,18 @@ class PlayerScore(ABC):
 class PlayerScore10by10(PlayerScore):
     """The player score for 10 by 10."""
 
-    def __init__(self, player_info: PlayerInfo) -> None:
-        """Initialize the player score for 10 by 10."""
-        super().__init__(player_info)
-        self.point = 0
+    @property
+    def point(self) -> int:
+        """Get the point."""
+        return self.gain * (10 - self.loss)
+
+    @point.setter
+    def point(self, value: int) -> None:
+        raise AttributeError("point is read-only")
 
     def answer_right(self) -> None:
         """Define the behavior when the player answers right."""
         super().answer_right()
-        self.point = self.gain * self.loss
         if self.point >= 100:
             self.state = PlayerState.WIN
 
@@ -97,13 +100,20 @@ class PlayerScoreSwedish10(PlayerScore):
     def __init__(self, player_info: PlayerInfo) -> None:
         """Initialize the player score for Swedish 10."""
         super().__init__(player_info)
-        self.point = 0
         self.penalty = 0
+
+    @property
+    def point(self) -> int:
+        """Get the point."""
+        return self.gain
+
+    @point.setter
+    def point(self, value: int) -> None:
+        raise AttributeError("point is read-only")
 
     def answer_right(self) -> None:
         """Define the behavior when the player answers right."""
         super().answer_right()
-        self.point += 1
         if self.point >= 10:
             self.state = PlayerState.WIN
 
@@ -125,6 +135,15 @@ class PlayerScoreSwedish10(PlayerScore):
 
 class PlayerScoreFreeze10(PlayerScore):
     """The player score for Freeze 10."""
+
+    @property
+    def point(self) -> int:
+        """Get the point."""
+        return self.gain
+
+    @point.setter
+    def point(self, value: int) -> None:
+        raise AttributeError("point is read-only")
 
     def answer_right(self) -> None:
         """Define the behavior when the player answers right."""
