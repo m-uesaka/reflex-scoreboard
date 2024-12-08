@@ -1,0 +1,23 @@
+version: "3"
+
+env:
+  SRC: reflex_scoreboard/
+  TEST: test/
+
+tasks:
+  format:
+    cmds:
+      - rye run ruff format $SRC
+      - rye run ruff format $TEST
+      - rye run ruff check $SRC --fix
+      - rye run ruff check $TEST --fix
+  check_type:
+    cmds:
+      - rye run mypy $SRC
+      - rye run mypy $TEST
+  test:
+    cmds:
+      - rye run pytest $TEST
+  install:
+    cmds:
+      - rye sync
