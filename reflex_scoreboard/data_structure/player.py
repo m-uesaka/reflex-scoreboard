@@ -33,19 +33,14 @@ class PlayerScore:
     breaks: int = 0
     state: PlayerState = PlayerState.NORMAL
 
-    def __eq__(self, other: object) -> bool:
-        """Check equality based on player_id and name.
+    def is_same_player(self, player: "PlayerScore") -> bool:
+        """Check if the current player is the same as another player.
 
         Args:
-            other (object): The object to compare with.
-
-        Raises:
-            NotImplemented: If the other object is not an instance of PlayerScore.
+            player (PlayerScore): The player to compare with.
 
         Returns:
-            bool: True if equal, False otherwise.
+            bool: True if the players are the same, False otherwise.
 
         """
-        if not isinstance(other, PlayerScore):
-            raise NotImplementedError("Other must be an instance of PlayerScore.")
-        return self.player_id == other.player_id and self.name == other.name
+        return self.player_id == player.player_id and self.name == player.name

@@ -1,5 +1,4 @@
-import dataclasses
-
+from reflex_scoreboard.data_structure.payload import Payload
 from reflex_scoreboard.data_structure.player import PlayerState
 from reflex_scoreboard.data_structure.scoreboard import ScoreboardState
 from reflex_scoreboard.operation.operation_base import OperationBase
@@ -44,10 +43,10 @@ class NoMxOperation(OperationBase):
             ScoreboardState: The updated scoreboard state with the correct answer.
 
         """
-        new_scoreboard = dataclasses.replace(scoreboard)
-        new_scoreboard = type(self).add_answers(new_scoreboard, index)
+        new_scoreboard = type(self).add_answers(scoreboard, index)
         if new_scoreboard[index].answers >= self.win_threshold:
             new_scoreboard[index].state = PlayerState.WIN
+        new_scoreboard.question_count += 1
         return new_scoreboard
 
     def make_miss(self, scoreboard: ScoreboardState, index: int) -> ScoreboardState:
@@ -61,8 +60,37 @@ class NoMxOperation(OperationBase):
             ScoreboardState: The updated scoreboard state with the miss.
 
         """
-        new_scoreboard = dataclasses.replace(scoreboard)
-        new_scoreboard = type(self).add_misses(new_scoreboard, index)
+        new_scoreboard = type(self).add_misses(scoreboard, index)
         if new_scoreboard[index].misses >= self.lose_threshold:
             new_scoreboard[index].state = PlayerState.LOSE
+        new_scoreboard.question_count += 1
         return new_scoreboard
+
+    def through(self, scoreboard: ScoreboardState) -> ScoreboardState:
+        """Perform the through operation on the scoreboard.
+
+        Args:
+            scoreboard (ScoreboardState): The scoreboard state.
+
+        Returns:
+            ScoreboardState: The updated scoreboard state with the through operation.
+
+        """
+        new_scoreboard = scoreboard.copy()
+        new_scoreboard.question_count += 1
+        return new_scoreboard
+
+    def __call__(
+        self, scoreboard: ScoreboardState, payload: Payload
+    ) -> ScoreboardState:
+        """Update the scoreboard state.
+
+        Args:
+            scoreboard (ScoreboardState): The scoreboard state.
+            payload (int | None): The payload containing the operation type and index.
+
+        Returns:
+            ScoreboardState: The updated scoreboard state.
+
+        """
+        return super().__call__(scoreboard, payload)

@@ -1,6 +1,6 @@
-import dataclasses
 from abc import ABC, abstractmethod
 
+from reflex_scoreboard.data_structure.payload import Payload, PayloadType
 from reflex_scoreboard.data_structure.scoreboard import ScoreboardState
 
 
@@ -21,7 +21,7 @@ class OperationBase(ABC):
             ScoreboardState: The updated scoreboard state with reduced breaks.
 
         """
-        new_scoreboard = dataclasses.replace(scoreboard)
+        new_scoreboard = scoreboard.copy()
         for player in new_scoreboard.players:
             player.breaks = max(0, player.breaks - 1)
         return new_scoreboard
@@ -38,7 +38,7 @@ class OperationBase(ABC):
             ScoreboardState: The updated scoreboard state with added answers.
 
         """
-        new_scoreboard = dataclasses.replace(scoreboard)
+        new_scoreboard = scoreboard.copy()
         new_scoreboard[index].answers += 1
         return new_scoreboard
 
@@ -54,9 +54,24 @@ class OperationBase(ABC):
             ScoreboardState: The updated scoreboard state with added misses.
 
         """
-        new_scoreboard = dataclasses.replace(scoreboard)
+        new_scoreboard = scoreboard.copy()
         new_scoreboard[index].misses += 1
         return new_scoreboard
+
+    @abstractmethod
+    def through(self, scoreboard: ScoreboardState) -> ScoreboardState:
+        """Update the scoreboard by passing the question.
+
+        This method should be implemented by subclasses.
+
+        Args:
+            scoreboard (ScoreboardState): The scoreboard state.
+            index (int): The index of the player who passed the question.
+
+        Returns:
+            ScoreboardState: The updated scoreboard state with the passed question.
+
+        """
 
     @abstractmethod
     def answer_right(self, scoreboard: ScoreboardState, index: int) -> ScoreboardState:
@@ -87,3 +102,27 @@ class OperationBase(ABC):
             ScoreboardState: The updated scoreboard state with the incorrect answer.
 
         """
+
+    def __call__(
+        self, scoreboard: ScoreboardState, payload: Payload
+    ) -> ScoreboardState:
+        """Update the scoreboard state.
+
+        This method should be implemented by subclasses.
+
+        Args:
+            scoreboard (ScoreboardState): The scoreboard state.
+            payload (Payload): The payload containing the operation type and index.
+
+        Returns:
+            ScoreboardState: The updated scoreboard state.
+
+        """
+        if payload.payload_type == PayloadType.RIGHT:
+            return self.answer_right(scoreboard, payload.index)
+        if payload.payload_type == PayloadType.MISS:
+            return self.make_miss(scoreboard, payload.index)
+        if payload.payload_type == PayloadType.THROUGH:
+            return self.through(scoreboard)
+
+        return scoreboard
