@@ -47,5 +47,5 @@ class PlayerScore:
 
         """
         if not isinstance(other, PlayerScore):
-            return NotImplemented
+            raise NotImplementedError("Other must be an instance of PlayerScore.")
         return self.player_id == other.player_id and self.name == other.name

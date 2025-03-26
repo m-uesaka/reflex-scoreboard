@@ -1,4 +1,5 @@
 from reflex_scoreboard.data_structure.player import PlayerScore, PlayerState
+import pytest
 
 
 class TestPlayerScore:
@@ -29,6 +30,14 @@ class TestPlayerScore:
 
         assert player1 == player2
         assert player1 != player3
+
+    @staticmethod
+    def test_equality_with_other_object() -> None:
+        player = PlayerScore(player_id=1, name="Alice")
+        other_object = object()
+
+        with pytest.raises(NotImplementedError):
+            _ = player == other_object
 
     @staticmethod
     def test_defaults() -> None:

@@ -20,7 +20,9 @@
   },
   "ruff.configuration": "ruff.toml",
   "cSpell.words": [
+    "htmlcov",
     "mypy",
+    "pytest",
     "rxconfig"
   ],
 }

@@ -17,7 +17,7 @@ tasks:
       - rye run mypy $TEST
   test:
     cmds:
-      - rye run pytest $TEST
+      - rye run pytest $TEST --cov=$SRC --cov-branch --cov-report html:./htmlcov --cov-fail-under 80
   install:
     cmds:
       - rye sync
