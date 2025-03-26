@@ -31,3 +31,21 @@ class TestScoreboardState:
 
         with pytest.raises(ValueError, match="Question count must be at least 1."):
             ScoreboardState(players=[player1, player2], question_count=0)
+
+    @staticmethod
+    def test_get_item() -> None:
+        player1 = PlayerScore(player_id=1, name="Alice")
+        player2 = PlayerScore(player_id=2, name="Bob")
+        scoreboard = ScoreboardState(players=[player1, player2], question_count=5)
+
+        assert scoreboard[0] == player1
+        assert scoreboard[1] == player2
+
+    @staticmethod
+    def test_get_item_out_of_range() -> None:
+        player1 = PlayerScore(player_id=1, name="Alice")
+        player2 = PlayerScore(player_id=2, name="Bob")
+        scoreboard = ScoreboardState(players=[player1, player2], question_count=5)
+
+        with pytest.raises(IndexError, match="Index out of range."):
+            _ = scoreboard[2]
