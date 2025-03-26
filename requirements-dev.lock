@@ -84,7 +84,7 @@ mdurl==0.1.2
 more-itertools==10.5.0
     # via jaraco-classes
     # via jaraco-functools
-mypy==1.13.0
+mypy==1.15.0
 mypy-extensions==1.0.0
     # via mypy
 nh3==0.2.19

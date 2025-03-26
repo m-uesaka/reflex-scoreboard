@@ -21,7 +21,7 @@ dev-dependencies = [
     "ruff>=0.8.2",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
-    "mypy>=1.13.0",
+    "mypy>=1.15.0",
 ]
 
 [tool.hatch.metadata]
@@ -29,3 +29,9 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["reflex_scoreboard/"]
+
+[tool.mypy]
+python_version = "3.12"
+
+[[tool.mypy.overrides]]
+module = ["reflex"]
