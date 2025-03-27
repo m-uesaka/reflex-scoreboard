@@ -10,54 +10,6 @@ class OperationBase(ABC):
     This class provides static methods to manipulate the scoreboard state.
     """
 
-    @staticmethod
-    def reduce_breaks(scoreboard: ScoreboardState) -> ScoreboardState:
-        """Reduce the breaks of all players in the scoreboard by 1.
-
-        Args:
-            scoreboard (ScoreboardState): The scoreboard state.
-
-        Returns:
-            ScoreboardState: The updated scoreboard state with reduced breaks.
-
-        """
-        new_scoreboard = scoreboard.copy()
-        for player in new_scoreboard.players:
-            player.breaks = max(0, player.breaks - 1)
-        return new_scoreboard
-
-    @staticmethod
-    def add_answers(scoreboard: ScoreboardState, index: int) -> ScoreboardState:
-        """Add answers to the player at the given index in the scoreboard.
-
-        Args:
-            scoreboard (ScoreboardState): The scoreboard state.
-            index (int): The index of the player to add answers to.
-
-        Returns:
-            ScoreboardState: The updated scoreboard state with added answers.
-
-        """
-        new_scoreboard = scoreboard.copy()
-        new_scoreboard[index].answers += 1
-        return new_scoreboard
-
-    @staticmethod
-    def add_misses(scoreboard: ScoreboardState, index: int) -> ScoreboardState:
-        """Add misses to the player at the given index in the scoreboard.
-
-        Args:
-            scoreboard (ScoreboardState): The scoreboard state.
-            index (int): The index of the player to add misses to.
-
-        Returns:
-            ScoreboardState: The updated scoreboard state with added misses.
-
-        """
-        new_scoreboard = scoreboard.copy()
-        new_scoreboard[index].misses += 1
-        return new_scoreboard
-
     @abstractmethod
     def through(self, scoreboard: ScoreboardState) -> ScoreboardState:
         """Update the scoreboard by passing the question.

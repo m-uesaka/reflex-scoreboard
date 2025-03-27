@@ -37,4 +37,4 @@ unfixable = [
 extend-safe-fixes = ["F401", "F841", "F811"]
 
 [lint.per-file-ignores]
-"**/tests/*" = ["D101", "D102", "S101"]
+"**/tests/*" = ["D101", "D102", "D103", "S101"]

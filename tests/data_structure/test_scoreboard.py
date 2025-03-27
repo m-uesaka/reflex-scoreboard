@@ -4,13 +4,22 @@ from reflex_scoreboard.data_structure.player import PlayerScore
 from reflex_scoreboard.data_structure.scoreboard import ScoreboardState
 
 
+@pytest.fixture
+def prepare_scoreboard_state() -> ScoreboardState:
+    return ScoreboardState(
+        players=[
+            PlayerScore(player_id=1, name="Alice"),
+            PlayerScore(player_id=2, name="Bob"),
+        ]
+    )
+
+
 class TestScoreboardState:
     @staticmethod
-    def test_add_players_normal() -> None:
+    def test_normal() -> None:
         player1 = PlayerScore(player_id=1, name="Alice")
         player2 = PlayerScore(player_id=2, name="Bob")
-        scoreboard = ScoreboardState()
-        scoreboard.add_players([player1, player2])
+        scoreboard = ScoreboardState([player1, player2])
 
         assert len(scoreboard.players) == 2
         assert scoreboard.players[0] == player1
@@ -18,38 +27,37 @@ class TestScoreboardState:
         assert scoreboard.question_count == 1
 
     @staticmethod
-    def test_duplicate_players() -> None:
-        player1 = PlayerScore(player_id=1, name="Alice")
-        player2 = PlayerScore(player_id=1, name="Alice")  # Duplicate player
-        scoreboard = ScoreboardState()
+    def test_add_players_normal(prepare_scoreboard_state: ScoreboardState) -> None:
+        player3 = PlayerScore(player_id=3, name="Charlie")
+        player4 = PlayerScore(player_id=4, name="David")
+        new_scoreboard = prepare_scoreboard_state.add_players([player3, player4])
+        assert len(new_scoreboard.players) == 4
+        assert new_scoreboard.players[2] == player3
+        assert new_scoreboard.players[3] == player4
+        assert new_scoreboard.question_count == 1
+
+    @staticmethod
+    def test_duplicate_players(prepare_scoreboard_state: ScoreboardState) -> None:
+        player3 = PlayerScore(player_id=1, name="Alice")
         with pytest.raises(ValueError, match="Players must be different."):
-            scoreboard.add_players([player1, player2])
+            _ = prepare_scoreboard_state.add_players([player3])
 
     @staticmethod
     def test_invalid_question_count() -> None:
         with pytest.raises(ValueError, match="Question count must be at least 1."):
-            _ = ScoreboardState(question_count=0)
+            _ = ScoreboardState([], question_count=0)
 
     @staticmethod
-    def test_get_item() -> None:
-        player1 = PlayerScore(player_id=1, name="Alice")
-        player2 = PlayerScore(player_id=2, name="Bob")
-        scoreboard = ScoreboardState(question_count=5)
-        scoreboard.add_players([player1, player2])
-
-        assert scoreboard[0] == player1
-        assert scoreboard[1] == player2
+    def test_getitem(prepare_scoreboard_state: ScoreboardState) -> None:
+        assert prepare_scoreboard_state[0].player_id == 1
+        assert prepare_scoreboard_state[1].player_id == 2
+        assert prepare_scoreboard_state[0].name == "Alice"
+        assert prepare_scoreboard_state[1].name == "Bob"
 
     @staticmethod
-    def test_get_item_out_of_range() -> None:
-        player1 = PlayerScore(player_id=1, name="Alice")
-        player2 = PlayerScore(player_id=2, name="Bob")
-
-        scoreboard = ScoreboardState(question_count=5)
-        scoreboard.add_players([player1, player2])
-
+    def test_get_item_out_of_range(prepare_scoreboard_state: ScoreboardState) -> None:
         with pytest.raises(IndexError, match="Index out of range."):
-            _ = scoreboard[2]
+            _ = prepare_scoreboard_state[2]
 
     @staticmethod
     def test_create_from_players_dict() -> None:
@@ -63,31 +71,15 @@ class TestScoreboardState:
         assert scoreboard.players[1].name == "Bob"
 
     @staticmethod
-    def test_len() -> None:
-        player1 = PlayerScore(player_id=1, name="Alice")
-        player2 = PlayerScore(player_id=2, name="Bob")
-        scoreboard = ScoreboardState(question_count=5)
-        scoreboard.add_players([player1, player2])
-
-        assert len(scoreboard) == 2
+    def test_len(prepare_scoreboard_state: ScoreboardState) -> None:
+        assert len(prepare_scoreboard_state) == 2
 
     @staticmethod
-    def test_copy() -> None:
-        player1 = PlayerScore(player_id=1, name="Alice")
-        player2 = PlayerScore(player_id=2, name="Bob")
-        scoreboard = ScoreboardState(question_count=5)
-        scoreboard.add_players([player1, player2])
+    def test_replace_player(prepare_scoreboard_state: ScoreboardState) -> None:
+        new_player = PlayerScore(player_id=3, name="Charlie")
+        updated_scoreboard = prepare_scoreboard_state.replace_player(0, new_player)
 
-        copied_scoreboard = scoreboard.copy()
-
-        assert len(copied_scoreboard) == len(scoreboard)
-        for copy_player, original_player in zip(
-            copied_scoreboard.players, scoreboard.players
-        ):
-            assert copy_player == original_player
-            assert copy_player.answers == original_player.answers
-            assert copy_player.misses == original_player.misses
-            assert copy_player.score == original_player.score
-            assert copy_player.breaks == original_player.breaks
-            assert copy_player.state == original_player.state
-        assert copied_scoreboard.question_count == scoreboard.question_count
+        assert updated_scoreboard[0].player_id == 3
+        assert updated_scoreboard[0].name == "Charlie"
+        assert updated_scoreboard[1].player_id == 2
+        assert updated_scoreboard[1].name == "Bob"

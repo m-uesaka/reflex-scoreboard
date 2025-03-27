@@ -43,11 +43,10 @@ class NoMxOperation(OperationBase):
             ScoreboardState: The updated scoreboard state with the correct answer.
 
         """
-        new_scoreboard = type(self).add_answers(scoreboard, index)
+        new_scoreboard = scoreboard.add_answer(index)
         if new_scoreboard[index].answers >= self.win_threshold:
-            new_scoreboard[index].state = PlayerState.WIN
-        new_scoreboard.question_count += 1
-        return new_scoreboard
+            new_scoreboard = new_scoreboard.update_state(index, PlayerState.WIN)
+        return new_scoreboard.set_question_count(new_scoreboard.question_count + 1)
 
     def make_miss(self, scoreboard: ScoreboardState, index: int) -> ScoreboardState:
         """Perform the make miss operation on the scoreboard.
@@ -60,11 +59,10 @@ class NoMxOperation(OperationBase):
             ScoreboardState: The updated scoreboard state with the miss.
 
         """
-        new_scoreboard = type(self).add_misses(scoreboard, index)
+        new_scoreboard = scoreboard.add_miss(index)
         if new_scoreboard[index].misses >= self.lose_threshold:
-            new_scoreboard[index].state = PlayerState.LOSE
-        new_scoreboard.question_count += 1
-        return new_scoreboard
+            new_scoreboard = new_scoreboard.update_state(index, PlayerState.LOSE)
+        return new_scoreboard.set_question_count(new_scoreboard.question_count + 1)
 
     def through(self, scoreboard: ScoreboardState) -> ScoreboardState:
         """Perform the through operation on the scoreboard.
@@ -76,9 +74,7 @@ class NoMxOperation(OperationBase):
             ScoreboardState: The updated scoreboard state with the through operation.
 
         """
-        new_scoreboard = scoreboard.copy()
-        new_scoreboard.question_count += 1
-        return new_scoreboard
+        return scoreboard.set_question_count(scoreboard.question_count + 1)
 
     def __call__(
         self, scoreboard: ScoreboardState, payload: Payload
