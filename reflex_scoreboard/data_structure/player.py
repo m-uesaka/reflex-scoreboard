@@ -5,8 +5,8 @@ from enum import Enum
 class PlayerState(Enum):
     """Enumeration for player states."""
 
-    NORMAL = 0
     WIN = 1
+    NORMAL = 0
     LOSE = -1
 
 

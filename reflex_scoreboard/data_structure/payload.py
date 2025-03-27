@@ -7,8 +7,8 @@ class PayloadType(Enum):
     """Enum for payload types."""
 
     RIGHT = 1
-    MISS = -1
     THROUGH = 0
+    MISS = -1
 
 
 @dataclass
